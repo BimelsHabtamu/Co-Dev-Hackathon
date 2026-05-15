@@ -47,3 +47,4 @@ Sales Officer (Frontend)          Manager (Backend /admin)
      → status = completed
      → stock deducted immediately
 7. View own sales history only"# CO-DEV_HACKATHON" 
+"# CO-DEV_HACKATHON" 
