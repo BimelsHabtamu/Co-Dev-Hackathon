@@ -48,3 +48,4 @@ Sales Officer (Frontend)          Manager (Backend /admin)
      → stock deducted immediately
 7. View own sales history only"# CO-DEV_HACKATHON" 
 "# CO-DEV_HACKATHON" 
+"# CO_DEV" 
