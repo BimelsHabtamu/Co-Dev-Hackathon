@@ -34,4 +34,9 @@ RUN chown -R webuser:webgroup /var/www/html \
     && chmod -R 755 /var/www/html/storage \
     && chmod -R 755 /var/www/html/bootstrap/cache
 
+COPY docker/start.sh /start.sh
+RUN chmod +x /start.sh
+
 EXPOSE 8080
+
+CMD ["/start.sh"]
