@@ -26,5 +26,5 @@ php artisan route:cache
 php artisan view:cache
 php artisan filament:optimize 2>/dev/null || true
 
-# Start Laravel server
-exec php artisan serve --host=0.0.0.0 --port=${PORT:-8080}
+# Start nginx + php-fpm via supervisor
+exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
