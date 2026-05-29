@@ -1,69 +1,48 @@
 FROM php:8.2-fpm
 
-# Install system dependencies
+# 1. Install system dependencies
 RUN apt-get update && apt-get install -y \
-    git \
-    curl \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    libzip-dev \
-    libicu-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    zip \
-    unzip \
-    nginx \
-    supervisor \
-    sqlite3 \
-    libsqlite3-dev \
+    git curl libpng-dev libonig-dev libxml2-dev \
+    libzip-dev libicu-dev libjpeg-dev libfreetype6-dev \
+    zip unzip nginx supervisor sqlite3 \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install \
-        pdo_mysql \
-        pdo \
-        pdo_sqlite \
-        mbstring \
-        exif \
-        pcntl \
-        bcmath \
-        gd \
-        zip \
-        intl \
-        opcache \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+        pdo pdo_mysql pdo_sqlite mbstring exif \
+        pcntl bcmath gd zip intl opcache \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Copy OPcache config
-COPY php.ini /usr/local/etc/php/conf.d/opcache.ini
-
-# Install Composer
+# 2. Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Set working directory
 WORKDIR /var/www
 
-# Copy project files
+# 3. Copy composer files FIRST (for layer caching)
+COPY composer.json composer.lock ./
+
+# 4. Install dependencies with --no-scripts
+#    This skips "php artisan package:discover" until artisan exists
+RUN composer install \
+    --no-dev \
+    --no-scripts \
+    --no-autoloader \
+    --no-interaction \
+    --prefer-dist
+
+# 5. NOW copy ALL app files (including artisan)
 COPY . .
 
-# Install PHP dependencies
-RUN php -d memory_limit=512M /usr/bin/composer install \
-    --optimize-autoloader \
-    --no-dev \
-    --no-interaction \
-    --ignore-platform-reqs
+# 6. NOW run the scripts and generate autoloader
+RUN composer dump-autoload --optimize \
+    && php artisan package:discover --ansi
 
-# Set permissions
+# 7. Set permissions
 RUN chown -R www-data:www-data /var/www \
     && chmod -R 755 /var/www/storage \
     && chmod -R 755 /var/www/bootstrap/cache
 
-# Copy nginx config
+# 8. Copy configs
 COPY docker/nginx.conf /etc/nginx/sites-available/default
-
-# Copy supervisor config
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
-# Copy start script
 COPY docker/start.sh /start.sh
 RUN chmod +x /start.sh
 
