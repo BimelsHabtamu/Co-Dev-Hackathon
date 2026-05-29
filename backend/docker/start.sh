@@ -32,6 +32,11 @@ php artisan vendor:publish --tag=filament-assets --force
 php artisan optimize
 php artisan filament:optimize
 
+# Cache everything
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+
 # Create log dirs
 mkdir -p /var/log/supervisor
 
