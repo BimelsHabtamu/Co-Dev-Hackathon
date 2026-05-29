@@ -8,10 +8,6 @@ use Illuminate\Http\JsonResponse;
 
 class UserController extends Controller
 {
-    /**
-     * List all users — manager only (enforced by route middleware).
-     * Returns id, name, email, role for each user.
-     */
     public function index(): JsonResponse
     {
         $users = User::with('roles')

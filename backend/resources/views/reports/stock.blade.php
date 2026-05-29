@@ -25,7 +25,7 @@
 
 <div class="header">
   <h1>Stock Report</h1>
-  <p>Semre Inventory &amp; Sales Management System</p>
+  <p>Qelem Inventory &amp; Sales Management System</p>
 </div>
 
 <div class="summary">

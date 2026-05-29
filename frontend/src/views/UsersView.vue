@@ -61,7 +61,7 @@
           </div>
           <div class="form-group">
             <label class="form-label">Email *</label>
-            <input v-model="form.email" type="email" class="form-input" required placeholder="user@semre.com" />
+            <input v-model="form.email" type="email" class="form-input" required placeholder="user@qelem.com" />
           </div>
           <div class="form-group">
             <label class="form-label">Role *</label>

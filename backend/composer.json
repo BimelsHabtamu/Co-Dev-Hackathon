@@ -58,8 +58,16 @@
             "@php artisan package:discover --ansi",
             "@php artisan filament:upgrade"
         ],
+        "post-install-cmd": [
+            "@php artisan vendor:publish --tag=filament-assets --ansi --force",
+            "@php artisan optimize --ansi",
+            "@php artisan filament:optimize --ansi"
+        ],
         "post-update-cmd": [
-            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
+            "@php artisan vendor:publish --tag=filament-assets --ansi --force",
+            "@php artisan optimize --ansi",
+            "@php artisan filament:optimize --ansi"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""

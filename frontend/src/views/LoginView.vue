@@ -3,7 +3,7 @@
     <div class="login-card">
 
       <div class="login-brand">
-        <img src="/logo.png" alt="Semre Logo" class="login-logo" />
+        <img src="/logo.png" alt="Qelem Logo" class="login-logo" />
         <h1>Qelem Meda</h1>
         <p>Inventory &amp; Sales Management</p>
       </div>
@@ -13,7 +13,7 @@
 
         <div class="form-group">
           <label class="form-label">Email</label>
-          <input v-model="email" type="email" class="form-input" placeholder="you@semre.com" required />
+          <input v-model="email" type="email" class="form-input" placeholder="you@qelem.com" required />
         </div>
 
         <div class="form-group">

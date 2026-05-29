@@ -91,8 +91,8 @@ class SaleController extends Controller
 
     public function show(Sale $sale): JsonResponse
     {
+        $user = request()->user();
 
-    $user = request()->user();
         if (! $user->hasRole('manager') && $sale->user_id !== $user->id) {
             abort(403, 'You do not have permission to view this sale.');
         }

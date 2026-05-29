@@ -22,14 +22,16 @@ class ProductResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form->schema([
-            TextInput::make('name')->required()->maxLength(255),
-            TextInput::make('category')->required()->maxLength(255),
-            TextInput::make('sku')->required()->unique(ignoreRecord: true)->maxLength(255),
-            TextInput::make('cost_price')->required()->numeric()->prefix('ETB')->minValue(0),
-            TextInput::make('selling_price')->required()->numeric()->prefix('ETB')->minValue(0),
-            TextInput::make('stock_quantity')->numeric()->default(0)->minValue(0),
-        ]);
+        return $form
+            ->extraAttributes(['novalidate' => true])
+            ->schema([
+                TextInput::make('name')->required()->maxLength(255),
+                TextInput::make('category')->required()->maxLength(255),
+                TextInput::make('sku')->required()->unique(ignoreRecord: true)->maxLength(255),
+                TextInput::make('cost_price')->required()->numeric()->prefix('ETB')->minValue(0),
+                TextInput::make('selling_price')->required()->numeric()->prefix('ETB')->minValue(0),
+                TextInput::make('stock_quantity')->numeric()->default(0)->minValue(0),
+            ]);
     }
 
     public static function table(Table $table): Table

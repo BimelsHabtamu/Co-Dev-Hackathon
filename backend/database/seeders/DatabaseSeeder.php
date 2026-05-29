@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
         $salesOfficerRole = Role::firstOrCreate(['name' => 'sales_officer']);
 
         $manager = User::updateOrCreate(
-            ['email' => 'manager@semre.com'],
+            ['email' => 'manager@qelem.com'],
             [
                 'name'              => 'Manager User',
                 'password'          => bcrypt('password123'),
@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
         $manager->syncRoles($managerRole);
 
         $salesOfficer = User::updateOrCreate(
-            ['email' => 'sales@semre.com'],
+            ['email' => 'sales@qelem.com'],
             [
                 'name'              => 'Sales Officer',
                 'password'          => bcrypt('password123'),

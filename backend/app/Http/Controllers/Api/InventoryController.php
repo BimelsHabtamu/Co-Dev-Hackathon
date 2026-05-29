@@ -9,7 +9,6 @@ use Illuminate\Http\JsonResponse;
 
 class InventoryController extends Controller
 {
-    // List all products with current stock levels
     public function index(): JsonResponse
     {
         $products = Product::select('id', 'name', 'sku', 'category', 'stock_quantity')
@@ -19,17 +18,16 @@ class InventoryController extends Controller
         return response()->json($products);
     }
 
-    // Add stock to a product
     public function stockIn(StockInRequest $request, Product $product): JsonResponse
     {
         $product->increment('stock_quantity', $request->quantity);
 
         return response()->json([
-            'message'       => "Stock added successfully.",
-            'product_id'    => $product->id,
-            'sku'           => $product->sku,
-            'added'         => $request->quantity,
-            'stock_quantity'=> $product->fresh()->stock_quantity,
+            'message'        => 'Stock added successfully.',
+            'product_id'     => $product->id,
+            'sku'            => $product->sku,
+            'added'          => $request->quantity,
+            'stock_quantity' => $product->fresh()->stock_quantity,
         ]);
     }
 }
