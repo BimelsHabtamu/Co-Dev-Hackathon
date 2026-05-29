@@ -4,7 +4,7 @@ set -e
 # Copy production env
 cp .env.production .env
 
-# Inject APP_KEY from Render environment variable
+# Inject environment variables from Render
 [ -n "$APP_KEY" ] && sed -i "s|^APP_KEY=.*|APP_KEY=${APP_KEY}|" .env
 [ -n "$APP_URL" ] && sed -i "s|^APP_URL=.*|APP_URL=${APP_URL}|" .env
 [ -n "$FRONTEND_URL" ] && sed -i "s|^FRONTEND_URL=.*|FRONTEND_URL=${FRONTEND_URL}|" .env
@@ -14,8 +14,12 @@ cp .env.production .env
 php artisan key:generate --force
 
 # Setup SQLite
-mkdir -p /var/www/database
-[ ! -f /var/www/database/database.sqlite ] && touch /var/www/database/database.sqlite
+mkdir -p /var/www/html/database
+[ ! -f /var/www/html/database/database.sqlite ] && touch /var/www/html/database/database.sqlite
+
+# Fix permissions
+chown -R webuser:webgroup /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database
+chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Run migrations
 php artisan migrate --force
@@ -36,11 +40,9 @@ php artisan route:cache
 php artisan view:cache
 
 # Fix storage permissions
-chown -R www-data:www-data /var/www/storage
-chmod -R 775 /var/www/storage
+chown -R webuser:webgroup /var/www/html/storage
+chmod -R 775 /var/www/html/storage
 
-# Create log dirs
-mkdir -p /var/log/supervisor
-
-# Start services via supervisor
-exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+# The serversideup image handles starting nginx+fpm automatically
+# We just need to exec the default entrypoint
+exec /init

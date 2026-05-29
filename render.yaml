@@ -7,11 +7,6 @@ services:
     rootDir: backend
     dockerfilePath: ./Dockerfile
 
-    disk:
-      name: sqlite-data
-      mountPath: /var/data
-      sizeGB: 1
-
     envVars:
       - key: APP_NAME
         value: "Qelem POS"
@@ -26,7 +21,7 @@ services:
       - key: DB_CONNECTION
         value: sqlite
       - key: DB_DATABASE
-        value: /var/www/database/database.sqlite
+        value: /var/www/html/database/database.sqlite
       - key: SESSION_DRIVER
         value: file
       - key: CACHE_STORE
