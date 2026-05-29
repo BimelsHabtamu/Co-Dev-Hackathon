@@ -1,6 +1,6 @@
 FROM php:8.2-cli
 
-# Install system dependencies + PHP extensions
+# Install system dependencies + all required PHP extensions
 RUN apt-get update && apt-get install -y \
     git curl zip unzip \
     libzip-dev libpng-dev libonig-dev libxml2-dev \
@@ -19,20 +19,27 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
 
-# Copy composer files and install dependencies
+# Copy composer files
 COPY composer.json composer.lock ./
-RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
 
-# Copy application files
+# Install dependencies — ignore platform reqs since we install extensions above
+RUN composer install \
+    --no-dev \
+    --optimize-autoloader \
+    --no-interaction \
+    --prefer-dist \
+    --ignore-platform-reqs
+
+# Copy all application files
 COPY . .
 
-# Copy startup script
-COPY start.sh /start.sh
-RUN chmod +x /start.sh
-
 # Set storage permissions
-RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache \
+    && chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+
+# Make startup script executable
+RUN chmod +x /var/www/start.sh
 
 EXPOSE 8000
 
-CMD ["/start.sh"]
+CMD ["/var/www/start.sh"]
