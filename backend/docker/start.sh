@@ -24,7 +24,7 @@ php artisan route:cache
 php artisan view:cache
 php artisan filament:optimize 2>/dev/null || true
 
-chown -R webuser:webgroup /var/www/html/storage
-chown -R webuser:webgroup /var/www/html/database
+chown -R www-data:www-data /var/www/html/storage
+chown -R www-data:www-data /var/www/html/database
 
 exec /init

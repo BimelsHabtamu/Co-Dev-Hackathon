@@ -30,8 +30,7 @@ RUN composer dump-autoload --optimize \
     && php artisan package:discover --ansi
 
 # Permissions
-RUN chown -R webuser:webgroup /var/www/html \
-    && chmod -R 755 /var/www/html/storage \
+RUN chmod -R 755 /var/www/html/storage \
     && chmod -R 755 /var/www/html/bootstrap/cache
 
 COPY docker/start.sh /start.sh
