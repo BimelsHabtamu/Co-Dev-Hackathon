@@ -22,11 +22,11 @@ services:
       - key: APP_KEY
         generateValue: true
       - key: APP_URL
-        value: https://qelem-pos-backend.onrender.com
+        value: https://co-dev-hackathon.onrender.com
       - key: DB_CONNECTION
         value: sqlite
       - key: DB_DATABASE
-        value: /var/data/database.sqlite
+        value: /var/www/database/database.sqlite
       - key: SESSION_DRIVER
         value: file
       - key: CACHE_STORE

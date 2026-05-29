@@ -14,8 +14,8 @@ cp .env.production .env
 php artisan key:generate --force
 
 # Setup SQLite
-mkdir -p /var/data
-[ ! -f /var/data/database.sqlite ] && touch /var/data/database.sqlite
+mkdir -p /var/www/database
+[ ! -f /var/www/database/database.sqlite ] && touch /var/www/database/database.sqlite
 
 # Run migrations
 php artisan migrate --force
