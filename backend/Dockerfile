@@ -14,6 +14,9 @@ RUN apt-get update && apt-get install -y \
 # Copy OPcache config
 COPY php.ini /usr/local/etc/php/conf.d/opcache.ini
 
+# Set PHP memory limit high for composer
+RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/memory.ini
+
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
@@ -22,13 +25,14 @@ WORKDIR /var/www
 # Copy composer files
 COPY composer.json composer.lock ./
 
-# Install dependencies — ignore platform reqs since we install extensions above
-RUN composer install \
+# Install dependencies with verbose output to see errors
+RUN php -d memory_limit=512M /usr/bin/composer install \
     --no-dev \
     --optimize-autoloader \
     --no-interaction \
     --prefer-dist \
-    --ignore-platform-reqs
+    --ignore-platform-reqs \
+    --verbose
 
 # Copy all application files
 COPY . .
