@@ -1,9 +1,10 @@
 FROM php:8.2-cli
 
 RUN apt-get update && apt-get install -y \
-    git curl zip unzip nginx supervisor sqlite3 \
+    git curl zip unzip nginx supervisor \
     libpng-dev libjpeg-dev libfreetype6-dev \
     libzip-dev libicu-dev libonig-dev libxml2-dev \
+    libsqlite3-dev sqlite3 \
     && docker-php-ext-configure gd \
         --with-freetype --with-jpeg \
     && docker-php-ext-install \
