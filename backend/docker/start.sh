@@ -30,7 +30,8 @@ php artisan db:seed --force || true
 # Publish assets and optimize
 php artisan vendor:publish --tag=filament-assets --force
 php artisan optimize
-php artisan filament:optimize
+# Filament optimize
+php artisan filament:optimize 2>/dev/null || true
 
 # Cache everything
 php artisan config:cache
