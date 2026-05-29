@@ -1,41 +1,43 @@
-FROM serversideup/php:8.2-fpm-nginx
+FROM php:8.2-cli
 
-# Switch to root to install extras
-USER root
+RUN apt-get update && apt-get install -y \
+    git curl zip unzip nginx supervisor sqlite3 \
+    libpng-dev libjpeg-dev libfreetype6-dev \
+    libzip-dev libicu-dev libonig-dev libxml2-dev \
+    && docker-php-ext-configure gd \
+        --with-freetype --with-jpeg \
+    && docker-php-ext-install \
+        pdo pdo_sqlite pdo_mysql \
+        mbstring bcmath zip gd intl opcache pcntl \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install only the extra PHP extensions we need
-RUN install-php-extensions intl gd zip bcmath opcache pdo_sqlite
-
-# Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-# Copy composer files first
 COPY composer.json composer.lock ./
 
-# Install dependencies - no scripts yet (artisan not copied yet)
-RUN composer install \
-    --no-dev \
-    --no-scripts \
-    --no-autoloader \
-    --no-interaction \
-    --prefer-dist
+RUN COMPOSER_MEMORY_LIMIT=-1 composer install \
+    --no-dev --no-scripts --no-autoloader \
+    --no-interaction --prefer-dist
 
-# Copy all app files
 COPY . .
 
-# Run autoloader + package discovery now that artisan exists
-RUN composer dump-autoload --optimize \
-    && php artisan package:discover --ansi
+RUN composer dump-autoload --optimize --no-dev
 
-# Permissions
-RUN chmod -R 755 /var/www/html/storage \
-    && chmod -R 755 /var/www/html/bootstrap/cache
+RUN php artisan package:discover --ansi || true
 
+RUN mkdir -p database storage/logs storage/framework/cache \
+    storage/framework/sessions storage/framework/views \
+    bootstrap/cache \
+    && touch database/database.sqlite \
+    && chmod -R 777 storage bootstrap/cache database
+
+COPY docker/nginx.conf /etc/nginx/sites-available/default
+COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY docker/start.sh /start.sh
 RUN chmod +x /start.sh
 
 EXPOSE 8080
 
-CMD ["/start.sh"]
+CMD ["/bin/bash", "/start.sh"]

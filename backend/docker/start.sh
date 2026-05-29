@@ -15,16 +15,16 @@ cp .env.production .env
 # Create sqlite db if not exists
 mkdir -p database
 touch database/database.sqlite
+chmod -R 777 storage bootstrap/cache database
 
 # Laravel setup
 php artisan key:generate --force
 php artisan migrate --force
+php artisan db:seed --force || true
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 php artisan filament:optimize 2>/dev/null || true
 
-chown -R www-data:www-data /var/www/html/storage
-chown -R www-data:www-data /var/www/html/database
-
-exec /init
+# Start Laravel server
+exec php artisan serve --host=0.0.0.0 --port=${PORT:-8080}
