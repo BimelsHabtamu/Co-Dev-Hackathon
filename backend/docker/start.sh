@@ -34,8 +34,9 @@ echo "==> Optimizing Laravel..."
 php artisan optimize
 php artisan filament:optimize
 
-echo "==> Creating nginx log directory..."
+echo "==> Creating log directories..."
 mkdir -p /var/log/supervisor
+mkdir -p /run/php
 
-echo "==> Starting nginx + php-fpm via supervisor..."
+echo "==> Starting services via supervisor..."
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
