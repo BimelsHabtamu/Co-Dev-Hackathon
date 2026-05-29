@@ -17,10 +17,6 @@ php artisan key:generate --force
 mkdir -p /var/data
 [ ! -f /var/data/database.sqlite ] && touch /var/data/database.sqlite
 
-# Fix permissions
-chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache /var/data
-chmod -R 775 /var/www/storage /var/www/bootstrap/cache
-
 # Run migrations
 php artisan migrate --force
 
@@ -30,6 +26,7 @@ php artisan db:seed --force || true
 # Publish assets and optimize
 php artisan vendor:publish --tag=filament-assets --force
 php artisan optimize
+
 # Filament optimize
 php artisan filament:optimize 2>/dev/null || true
 
@@ -38,8 +35,12 @@ php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
+# Fix storage permissions
+chown -R www-data:www-data /var/www/storage
+chmod -R 775 /var/www/storage
+
 # Create log dirs
 mkdir -p /var/log/supervisor
 
-# Start nginx + php-fpm
+# Start services via supervisor
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
